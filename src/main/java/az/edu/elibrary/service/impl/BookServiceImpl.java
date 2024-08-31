@@ -6,11 +6,10 @@ import az.edu.elibrary.dto.response.RespStatus;
 import az.edu.elibrary.dto.response.Response;
 import az.edu.elibrary.entity.*;
 import az.edu.elibrary.repository.*;
-import az.project.elibrary.entity.*;
+
 import az.edu.elibrary.enums.EnumAvailableStatus;
 import az.edu.elibrary.exception.ExceptionConstants;
 import az.edu.elibrary.exception.LibraryException;
-import az.project.elibrary.repository.*;
 import az.edu.elibrary.service.BookService;
 import az.edu.elibrary.utils.Utility;
 import lombok.RequiredArgsConstructor;
