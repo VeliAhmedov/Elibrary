@@ -12,7 +12,7 @@ public interface CustomerService {
 
     Response<RespCustomer> getById(Long customerId, String token);
 
-    Response create(ReqCustomer reqCustomer, String token);
+//    Response create(ReqCustomer reqCustomer, String token);
 
     Response<RespCustomer> update(ReqCustomer reqCustomer,String token);
 

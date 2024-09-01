@@ -26,10 +26,10 @@ public class CustomerController {
     public Response<RespCustomer> getById(@PathVariable("id") Long customerId, @RequestHeader String token){
         return customerService.getById(customerId, token);
     }
-    @PostMapping("/create")
-    public Response create(@RequestBody ReqCustomer reqCustomer, @RequestHeader String token){
-        return customerService.create(reqCustomer, token);
-    }
+//    @PostMapping("/create")
+//    public Response create(@RequestBody ReqCustomer reqCustomer, @RequestHeader String token){
+//        return customerService.create(reqCustomer, token);
+//    }
 
     @PutMapping("/update")
     public Response<RespCustomer> update(@RequestBody ReqCustomer reqCustomer, @RequestHeader String token){

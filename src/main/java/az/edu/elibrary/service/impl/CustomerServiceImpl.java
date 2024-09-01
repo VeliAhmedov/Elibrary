@@ -95,59 +95,59 @@ public class CustomerServiceImpl implements CustomerService {
         return response;
     }
 
-    @Override
-    public Response create(ReqCustomer reqCustomer, String token) {
-        Response response = new Response();
-        try {
-            LOGGER.info("Create in customer request has been done with token: "+token);
-            utility.checkToken(token);
-            String name = reqCustomer.getName();
-            String surname =reqCustomer.getSurname();
-            Long userId = reqCustomer.getUserId();
-            if (userId==null){
-                LOGGER.warn("userId has been ignored");
-                throw new LibraryException(ExceptionConstants.INVALID_REQUEST_DATA,"invalid request data");
-            }
-            if (name == null || surname == null){
-                LOGGER.warn("customer name or surname has been ignored");
-                throw new LibraryException(ExceptionConstants.CUSTOMER_NAME_OR_SURNAME_NOT_FOUND,"customer surname or name not found");
-            }
-            User user = userRepository.findUserByIdAndActive(userId, EnumAvailableStatus.DEACTIVE.value);
-            if (user == null){
-                LOGGER.warn("user not found");
-                throw new LibraryException(ExceptionConstants.USER_NOT_FOUND,"user not found");
-            }
-            if (customerRepository.findCustomerByUserAndActive(user, EnumAvailableStatus.ACTIVE.value) != null) {
-                LOGGER.warn("User already has a customer");
-                throw new LibraryException(ExceptionConstants.USER_ALREADY_HAVE_CUSTOMER, "User already has a customer");
-            }
-            Customer customer = Customer.builder()
-                    .name(name)
-                    .surname(surname)
-                    .address(reqCustomer.getAddress())
-                    .dob(reqCustomer.getDob())
-                    .phone(reqCustomer.getPhone())
-                    .pin(reqCustomer.getPin())
-                    .libraryCardNumber(reqCustomer.getLibraryCardNumber())
-                    .user(user)
-                    .build();
-            customerRepository.save(customer);
-            // after customer for userid created, user will be activated
-            user.setActive(EnumAvailableStatus.ACTIVE.value);
-            userRepository.save(user);
-            LOGGER.info("Customer has  successfully created data: "+ customer);
-            response.setStatus(RespStatus.getSuccessMessage());
-        }catch (LibraryException ex){
-            ex.printStackTrace();
-            LOGGER.error("LibraryException occurred in create in Customer : ", ex);
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        }catch (Exception ex){
-            ex.printStackTrace();
-            LOGGER.error("Exception occurred in create in Customer : ", ex);
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal Exception"));
-        }
-        return response;
-    }
+//    @Override
+//    public Response create(ReqCustomer reqCustomer, String token) {
+//        Response response = new Response();
+//        try {
+//            LOGGER.info("Create in customer request has been done with token: "+token);
+//            utility.checkToken(token);
+//            String name = reqCustomer.getName();
+//            String surname =reqCustomer.getSurname();
+//            Long userId = reqCustomer.getUserId();
+//            if (userId==null){
+//                LOGGER.warn("userId has been ignored");
+//                throw new LibraryException(ExceptionConstants.INVALID_REQUEST_DATA,"invalid request data");
+//            }
+//            if (name == null || surname == null){
+//                LOGGER.warn("customer name or surname has been ignored");
+//                throw new LibraryException(ExceptionConstants.CUSTOMER_NAME_OR_SURNAME_NOT_FOUND,"customer surname or name not found");
+//            }
+//            User user = userRepository.findUserByIdAndActive(userId, EnumAvailableStatus.DEACTIVE.value);
+//            if (user == null){
+//                LOGGER.warn("user not found");
+//                throw new LibraryException(ExceptionConstants.USER_NOT_FOUND,"user not found");
+//            }
+//            if (customerRepository.findCustomerByUserAndActive(user, EnumAvailableStatus.ACTIVE.value) != null) {
+//                LOGGER.warn("User already has a customer");
+//                throw new LibraryException(ExceptionConstants.USER_ALREADY_HAVE_CUSTOMER, "User already has a customer");
+//            }
+//            Customer customer = Customer.builder()
+//                    .name(name)
+//                    .surname(surname)
+//                    .address(reqCustomer.getAddress())
+//                    .dob(reqCustomer.getDob())
+//                    .phone(reqCustomer.getPhone())
+//                    .pin(reqCustomer.getPin())
+//                    .libraryCardNumber(reqCustomer.getLibraryCardNumber())
+//                    .user(user)
+//                    .build();
+//            customerRepository.save(customer);
+//            // after customer for userid created, user will be activated
+//            user.setActive(EnumAvailableStatus.ACTIVE.value);
+//            userRepository.save(user);
+//            LOGGER.info("Customer has  successfully created data: "+ customer);
+//            response.setStatus(RespStatus.getSuccessMessage());
+//        }catch (LibraryException ex){
+//            ex.printStackTrace();
+//            LOGGER.error("LibraryException occurred in create in Customer : ", ex);
+//            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
+//        }catch (Exception ex){
+//            ex.printStackTrace();
+//            LOGGER.error("Exception occurred in create in Customer : ", ex);
+//            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal Exception"));
+//        }
+//        return response;
+//    }
 
     @Override
     public Response<RespCustomer> update(ReqCustomer reqCustomer,String token) {

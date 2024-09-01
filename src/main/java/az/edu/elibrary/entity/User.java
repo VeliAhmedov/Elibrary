@@ -26,9 +26,11 @@ public class User {
     private String username;
     @Column(nullable = false)
     private String password;
-    private String fullName;
+    private String email;
     private String token;
     private String role; // either customer or admin it can be
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Customer customer;
     @CreationTimestamp
     private Date dataDate;
     @ColumnDefault(value = "1")

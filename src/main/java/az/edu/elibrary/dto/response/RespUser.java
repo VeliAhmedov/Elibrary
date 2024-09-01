@@ -7,7 +7,6 @@ import lombok.Data;
 @Builder
 public class RespUser {
     private String username;
-    private String fullName;
     private RespToken respToken;
     private String Role;
 }

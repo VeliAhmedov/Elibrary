@@ -6,10 +6,12 @@ import az.edu.elibrary.dto.response.RespStatus;
 import az.edu.elibrary.dto.response.RespToken;
 import az.edu.elibrary.dto.response.RespUser;
 import az.edu.elibrary.dto.response.Response;
+import az.edu.elibrary.entity.Customer;
 import az.edu.elibrary.entity.User;
 import az.edu.elibrary.enums.EnumAvailableStatus;
 import az.edu.elibrary.exception.ExceptionConstants;
 import az.edu.elibrary.exception.LibraryException;
+import az.edu.elibrary.repository.CustomerRepository;
 import az.edu.elibrary.repository.UserRepository;
 import az.edu.elibrary.service.UserService;
 import az.edu.elibrary.utils.Utility;
@@ -27,6 +29,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final CustomerRepository customerRepository;
     private final Utility utility;
     @Override
     public Response<RespUser> auth(ReqUser reqUser) {
@@ -94,7 +97,8 @@ public class UserServiceImpl implements UserService {
             String username = reqUser.getUsername();
             String password = reqUser.getPassword();
             String role = reqUser.getRole();
-            if (username == null || username.trim().isEmpty() || password == null || password.trim().isEmpty() || role == null || role.trim().isEmpty()) {
+            String email = reqUser.getEmail();
+            if (username == null || username.trim().isEmpty() || password == null || password.trim().isEmpty() || role == null || role.trim().isEmpty() || email == null || email.trim().isEmpty()) {
                 throw new LibraryException(ExceptionConstants.USERNAME_OR_PASSWORD_IS_EMPTY, "Username, password, or role is empty");
             }
             if (!role.trim().equalsIgnoreCase("admin") && !role.trim().equalsIgnoreCase("customer")) {
@@ -108,7 +112,7 @@ public class UserServiceImpl implements UserService {
             User user = User.builder()
                     .username(username)
                     .password(password)
-                    .fullName(reqUser.getFullName())
+                    .email(email)
                     .role(role)
                     .token(token)
                     .dataDate(new Date())
@@ -117,6 +121,25 @@ public class UserServiceImpl implements UserService {
                     .active(EnumAvailableStatus.DEACTIVE.value)
                     .build();
             userRepository.save(user);
+            // Automatically create customer if role is 'customer'
+            if (role.trim().equalsIgnoreCase("customer")) {
+                Customer customer = Customer.builder()
+                        .user(user)
+                        .name(reqUser.getName()) // Add other required fields
+                        .surname(reqUser.getSurname())
+                        .dob(reqUser.getDob())
+                        .address(reqUser.getAddress())
+                        .libraryCardNumber(reqUser.getLibraryCardNumber())
+                        .phone(reqUser.getPhone())
+                        .pin(reqUser.getPin())
+                        .balance(0.0)
+                        .build();
+                customerRepository.save(customer);
+
+                // Update user to active status after customer is created
+                user.setActive(EnumAvailableStatus.ACTIVE.value);
+                userRepository.save(user);
+            }
             response.setT(convertToRespUser(user));
             response.setStatus(RespStatus.getSuccessMessage());
         } catch (LibraryException ex) {
@@ -136,7 +159,6 @@ public class UserServiceImpl implements UserService {
                 .build();
         return RespUser.builder()
                 .username(user.getUsername())
-                .fullName(user.getFullName())
                 .respToken(respToken)
                 .Role(user.getRole())
                 .build();
