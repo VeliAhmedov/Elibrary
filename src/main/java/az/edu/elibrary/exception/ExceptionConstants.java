@@ -2,7 +2,10 @@ package az.edu.elibrary.exception;
 
 
 public class ExceptionConstants {
+    //created this for not being created object of this class
+    private ExceptionConstants(){
 
+    }
     public static final Integer INTERNAL_EXCEPTION = 100;
     public static final Integer INVALID_REQUEST_DATA = 101;
     public static final Integer CUSTOMER_NOT_FOUND = 102;
